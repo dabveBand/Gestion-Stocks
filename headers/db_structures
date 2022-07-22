@@ -1,0 +1,63 @@
+-- Category Table
+CREATE TABLE "magasin_category" (
+    "cat_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, 
+    "name" varchar(200) NOT NULL, 
+    "slug" varchar(200) NOT NULL UNIQUE
+);
+
+-- The main table MagasinArticle
+CREATE TABLE "magasin_article" (
+    "art_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, 
+    "slug" varchar(200) NOT NULL, 
+    "designation" varchar(255) NULL, 
+    "code" varchar(100) NOT NULL UNIQUE, 
+    "ref" varchar(255) NULL, 
+    "umesure" varchar(50) NULL, 
+    "emp" varchar(50) NULL, 
+    "qte" integer unsigned NOT NULL, 
+    "prix" decimal NOT NULL, "valeur" decimal NULL, 
+    "category_id" integer NOT NULL REFERENCES "magasin_category" ("cat_id") DEFERRABLE INITIALLY DEFERRED, 
+    "observation" varchar(255) NULL
+);
+
+-- Movement Table
+CREATE TABLE "magasin_movement" (
+    "movement_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, 
+    "art_id_id" integer NOT NULL REFERENCES "magasin_article" ("art_id") DEFERRABLE INITIALLY DEFERRED, 
+    "movement_date" datetime NOT NULL, 
+    "movement" varchar(10) NOT NULL, 
+    "qte" integer unsigned NULL CHECK ("qte" >= 0), 
+    "prix" decimal NULL, 
+    "valeur" decimal NULL, 
+    "user_id_id" integer NOT NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED
+);
+
+-- MagasinHistory Table
+CREATE TABLE "magasin_history" (
+    "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "hist_date"	datetime NOT NULL,
+    "user_id"	INTEGER,
+    "art_id"	integer NOT NULL,
+    "operation"	varchar(30) NOT NULL,
+    "old_values"	TEXT,
+    "new_values"	TEXT,
+    FOREIGN KEY("user_id") REFERENCES "auth_user"("id") ON DELETE CASCADE,
+    FOREIGN KEY("art_id") REFERENCES "magasin_article"("art_id") ON DELETE CASCADE
+ );
+
+-- User Table
+CREATE TABLE "auth_user" (
+    "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, 
+    "password" varchar(128) NOT NULL, 
+    "last_login" datetime NULL, 
+    "is_superuser" bool NOT NULL, 
+    "username" varchar(150) NOT NULL UNIQUE, 
+    "first_name" varchar(30) NOT NULL, 
+    "email" varchar(254) NOT NULL, 
+    "is_staff" bool NOT NULL, 
+    "is_active" bool NOT NULL, 
+    "date_joined" datetime NOT NULL, 
+    "last_name" varchar(150) NOT NULL
+);
+
+
